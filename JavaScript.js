@@ -1,162 +1,152 @@
-class Calculator {
-  constructor(previousOperandTextElement, currentOperandTextElement) {
-    this.previousOperandTextElement = previousOperandTextElement
-    this.currentOperandTextElement = currentOperandTextElement
-    this.clear()
-  }
-
-  clear() {
-    this.currentOperand = ''
-    this.previousOperand = ''
-    this.operation = undefined
-  }
-
-  delete() {
-    this.currentOperand = this.currentOperand.toString().slice(0, -1)
-  }
-
-  appendNumber(number) {
-    if (number === '.' && this.currentOperand.includes('.')) return
-    this.currentOperand = this.currentOperand.toString() + number.toString()
-  }
-
-  chooseOperation(operation) {
-    if (this.currentOperand === '') return
-    if (this.previousOperand !== '') {
-      this.compute()
-    }
-    this.operation = operation
-    this.previousOperand = this.currentOperand
-    this.currentOperand = ''
-  }
-
-  compute() {
-    let computation
-    const prev = parseFloat(this.previousOperand)
-    const current = parseFloat(this.currentOperand)
-    if (isNaN(prev) || isNaN(current)) return
-    switch (this.operation) {
-      case '+':
-        computation = prev + current
-        break
-      case '-':
-        computation = prev - current
-        break
-      case '*':
-        computation = prev * current
-        break
-      case '÷':
-        computation = prev / current
-        break
-      default:
-        return
-    }
-    this.currentOperand = computation
-    this.operation = undefined
-    this.previousOperand = ''
-  }
-
-  getDisplayNumber(number) {
-    const stringNumber = number.toString()
-    const integerDigits = parseFloat(stringNumber.split('.')[0])
-    const decimalDigits = stringNumber.split('.')[1]
-    let integerDisplay
-    if (isNaN(integerDigits)) {
-      integerDisplay = ''
-    } else {
-      integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 })
-    }
-    if (decimalDigits != null) {
-      return `${integerDisplay}.${decimalDigits}`
-    } else {
-      return integerDisplay
-    }
-  }
-
-  updateDisplay() {
-    this.currentOperandTextElement.innerText =
-      this.getDisplayNumber(this.currentOperand)
-    if (this.operation != null) {
-      this.previousOperandTextElement.innerText =
-        `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`
-    } else {
-      this.previousOperandTextElement.innerText = ''
-    }
-  }
+function printError(elemId, hintMsg) {
+    document.getElementById(elemId).innerHTML = hintMsg;
 }
 
 
-const numberButtons = document.querySelectorAll('[data-number]')
-const operationButtons = document.querySelectorAll('[data-operation]')
-const equalsButton = document.querySelector('[data-equals]')
-const deleteButton = document.querySelector('[data-delete]')
-const allClearButton = document.querySelector('[data-all-clear]')
-const previousOperandTextElement = document.querySelector('[data-previous-operand]')
-const currentOperandTextElement = document.querySelector('[data-current-operand]')
+function validateForm() {
+    var name = document.contactForm.name.value;
+    var email = document.contactForm.email.value;
+    var mobile = document.contactForm.mobile.value;
+    var dob = document.contactForm.dob.value;
+    var country = document.contactForm.country.value;
+    var address = document.contactForm.address.value;
+    var zip = document.contactForm.zip.value;
+    var gender = document.contactForm.gender.value;
+    var contact = document.contactForm.contact.value;
+    var relation = document.contactForm.relation.value;
+    var hobbies = [];
+    var checkboxes = document.getElementsByName("hobbies[]");
+    for(var i=0; i < checkboxes.length; i++) {
+        if(checkboxes[i].checked) {
+            hobbies.push(checkboxes[i].value);
+        }
+    }
+    
+    var nameErr = emailErr = mobileErr = dobErr = countryErr = addressErr = zipErr = genderErr = contactErr = relationErr = true;
+    
+   
+    if(name == "") {
+        printError("nameErr", "Please enter your name");
+    } else {
+        var regex = /^[a-zA-Z\s]+$/;                
+        if(regex.test(name) === false) {
+            printError("nameErr", "Please enter a valid name");
+        } else {
+            printError("nameErr", "");
+            nameErr = false;
+        }
+    }
+    
+    
+    if(email == "") {
+        printError("emailErr", "Enter  Email Address");
+    } else {
+        var regex = /^\S+@\S+\.\S+$/;
+        if(regex.test(email) === false) {
+            printError("emailErr", "Enter a valid email address");
+        } else{
+            printError("EmailErr", "");
+            emailErr = false;
+        }
+    }
+    
+   
+    if(mobile == "") {
+        printError("mobileErr", "Enter Your Mobile Number");
+    } else {
+        var regex = /^[1-9]\d{10}$/;
+        if(regex.test(mobile) === false) {
+            printError("mobileErr", " Enter a valid 11 digit Mobile Number");
+        } else{
+            printError("mobileErr", "");
+            mobileErr = false;
+        }
+    }
+    
+ 
+    if(dob == "") {
+        printError("dobErr", " Select your Date of Birth");
+    } else {
+        printError("dobErr", "");
+        dobErr = false;
+    }
+    
 
-const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement)
+    if(country == "Select") {
+        printError("countryErr", "Please select your country");
+    } else {
+        printError("countryErr", "");
+        countryErr = false;
+    }
 
-numberButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    calculator.appendNumber(button.innerText)
-    calculator.updateDisplay()
-  })
-})
+   
+    if(address == "") {
+        printError("addressErr", "Please select your address");
+    } else {
+        printError("addressErr", "");
+        addressErr = false;
+    }
 
-operationButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    calculator.chooseOperation(button.innerText)
-    calculator.updateDisplay()
-  })
-})
+  
+    if(zip == "") {
+        printError("zipErr", "Please enter your zip code");
+    } else {
+        var regex = /^[1-9]\d{3}$/;
+        if(regex.test(zip) === false) {
+            printError("zipErr", " enter a valid 4 digit zip code");
+        } else{
+            printError("zipErr", "");
+            zipErr = false;
+        }
+    }
+    
+    
+    if(gender == "") {
+        printError("genderErr", " select your gender");
+    } else {
+        printError("genderErr", "");
+        genderErr = false;
+    }
+    
+    
+    if(contact == "") {
+        printError("contactErr", " enter your emergency contact number");
+    } else {
+        var regex = /^[1-9]\d{9}$/;
+        if(regex.test(contact) === false) {
+            printError("contactErr", " enter a valid 11 digit mobile emergenct contact number");
+        } else{
+            printError("contactErr", "");
+            contactErr = false;
+        }
+    }
+    
+   
+    if(relation == "") {
+        printError("relationErr", "enter your realation with the emergency contact");
+    } else {
+        printError("relationErr", "");
+        relationErr = false;
+    }
+    
 
-equalsButton.addEventListener('click', button => {
-  calculator.compute()
-  calculator.updateDisplay()
-})
-
-allClearButton.addEventListener('click', button => {
-  calculator.clear()
-  calculator.updateDisplay()
-})
-
-deleteButton.addEventListener('click', button => {
-  calculator.delete()
-  calculator.updateDisplay()
-})
-
-document.addEventListener('keydown', function (event) {
-  let patternForNumbers = /[0-9]/g;
-  let patternForOperators = /[+\-*\/]/g
-  if (event.key.match(patternForNumbers)) {
-    event.preventDefault();
-    calculator.appendNumber(event.key)
-    calculator.updateDisplay()
-  }
-  if (event.key === '.') {
-    event.preventDefault();
-    calculator.appendNumber(event.key)
-    calculator.updateDisplay()
-  }
-  if (event.key.match(patternForOperators)) {
-    event.preventDefault();
-    calculator.chooseOperation(event.key)
-    calculator.updateDisplay()
-  }
-  if (event.key === 'Enter' || event.key === '=') {
-    event.preventDefault();
-    calculator.compute()
-    calculator.updateDisplay()
-  }
-  if (event.key === "Backspace") {
-    event.preventDefault();
-    calculator.delete()
-    calculator.updateDisplay()
-  }
-  if (event.key == 'Delete') {
-    event.preventDefault();
-    calculator.clear()
-    calculator.updateDisplay()
-  }
-
-});
+    if((nameErr || emailErr || mobileErr || dobErr || countryErr || addressErr || zipErr || genderErr || contactErr || relationErr) == true) {
+       return false;
+    } else {
+        var dataPreview = "You've entered the following details: \n" +
+                          "Full Name: " + name + "\n" +
+                          "Email Address: " + email + "\n" +
+                          "Mobile Number: " + mobile + "\n" +
+                          "Date of Birth: " + dob + "\n" +
+                          "Country: " + country + "\n" +
+                          "Address: " + address + "\n";
+                          "ZIP: " + zip + "\n";
+                          "Gender: " + gender + "\n";
+                          "Emergency Contact: " + contact + "\n";
+                          "Relation with the Contact: " + relation + "\n";
+        if(hobbies.length) {
+            dataPreview += "Hobbies: " + hobbies.join(", ");
+        }
+        alert(dataPreview);
+    }
+};
